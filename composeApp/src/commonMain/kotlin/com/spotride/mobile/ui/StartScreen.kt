@@ -1,4 +1,4 @@
-package com.spotride.mobile
+package com.spotride.mobile.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,12 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.spotride.mobile.model.service.UserApiService
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-fun SpotrideApp(userApiService: UserApiService) {
+fun StartScreen(userApiService: UserApiService) {
     val coroutineScope = rememberCoroutineScope()
 
     var jsonResponse by remember { mutableStateOf("Put User ID and press button") }
@@ -83,4 +83,12 @@ fun GetUserButton(onClick: () -> Unit, isEnabled: Boolean) {
     Button(onClick = { onClick() }, enabled = isEnabled) {
         Text("Get User")
     }
+}
+
+@Preview
+@Composable
+fun StartScreenPreview() {
+    StartScreen(
+        userApiService = UserApiService()
+    )
 }

@@ -31,6 +31,7 @@ kotlin {
         commonMain.dependencies {
             //base
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.ui.text.google.fonts)
 
             //compose
             implementation(compose.runtime)
@@ -98,4 +99,3 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
-

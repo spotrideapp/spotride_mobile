@@ -1,4 +1,4 @@
-package com.spotride.mobile.ui
+package com.spotride.mobile.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,7 +80,10 @@ fun StartScreen(userApiService: UserApiService) {
 
 @Composable
 fun GetUserButton(onClick: () -> Unit, isEnabled: Boolean) {
-    Button(onClick = { onClick() }, enabled = isEnabled) {
+    Button(
+        onClick = { onClick() },
+        enabled = isEnabled
+    ) {
         Text("Get User")
     }
 }

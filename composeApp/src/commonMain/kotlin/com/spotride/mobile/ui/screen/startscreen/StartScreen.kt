@@ -1,4 +1,4 @@
-package com.spotride.mobile.ui.screen
+package com.spotride.mobile.ui.screen.startscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,30 +23,31 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.spotride.mobile.model.service.UserApiService
+import com.spotride.mobile.model.user.model.UserMapper
+import com.spotride.mobile.model.user.service.UserApiService
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun StartScreen(userApiService: UserApiService) {
+
     val coroutineScope = rememberCoroutineScope()
 
-    var jsonResponse by remember { mutableStateOf("Put User ID and press button") }
+    val userController = remember { ScreenController(userApiService) }
+    val screenState by userController.state.collectAsState()
+
     var inputText by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Enter User ID:")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         TextField(
             value = inputText,
             onValueChange = {
@@ -54,23 +59,50 @@ fun StartScreen(userApiService: UserApiService) {
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Number
             ),
-            modifier = Modifier.fillMaxWidth()
+            isError = screenState is State.Error,
+            modifier = Modifier.fillMaxWidth(),
+            trailingIcon = {
+                if (screenState is State.Error) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "Error",
+                        tint = Color.Red
+                    )
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(text = jsonResponse.ifEmpty { "No Value" })
+        when (val state = screenState) {
+            is State.NoData -> {
+                Text(text = "Enter User ID and press Get User", color = Color.Gray)
+            }
+            is State.Loading -> {
+                Text(text = "Loading...", color = Color.Gray)
+            }
+            is State.Error -> {
+                Text(text = "Error: ${state.message}", color = Color.Red)
+            }
+            is State.Success -> {
+                Text(
+                    text = """
+                        User: ${state.user.id}
+                        Name: ${state.user.username}
+                        LastName: ${state.user.lastName}
+                        Email: ${state.user.lastName}
+                    """.trimIndent(),
+                    color = Color.Green
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         GetUserButton(
             onClick = {
                 coroutineScope.launch {
-                    jsonResponse = try {
-                        userApiService.getUserById(inputText.toInt())
-                    } catch (e: Exception) {
-                        "Error: ${e.message}"
-                    }
+                    userController.getUserById(inputText.toInt())
                 }
             },
             isEnabled = inputText.isNotEmpty()
@@ -91,7 +123,9 @@ fun GetUserButton(onClick: () -> Unit, isEnabled: Boolean) {
 @Preview
 @Composable
 fun StartScreenPreview() {
+    val userMapper = UserMapper()
+    val userApiService = UserApiService(userMapper)
     StartScreen(
-        userApiService = UserApiService()
+        userApiService = userApiService
     )
 }

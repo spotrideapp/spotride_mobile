@@ -26,18 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.spotride.mobile.model.user.model.UserMapper
-import com.spotride.mobile.model.user.service.UserApiService
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Composable
-fun StartScreen(userApiService: UserApiService) {
-
+fun StartScreen() {
+    val screenController = koinInject<ScreenController>()
     val coroutineScope = rememberCoroutineScope()
 
-    val userController = remember { ScreenController(userApiService) }
-    val screenState by userController.state.collectAsState()
+    val controller = remember { screenController }
+    val screenState by controller.state.collectAsState()
 
     var inputText by remember { mutableStateOf("") }
 
@@ -102,7 +101,7 @@ fun StartScreen(userApiService: UserApiService) {
         GetUserButton(
             onClick = {
                 coroutineScope.launch {
-                    userController.getUserById(inputText.toInt())
+                    controller.getUserById(inputText.toInt())
                 }
             },
             isEnabled = inputText.isNotEmpty()
@@ -123,9 +122,5 @@ fun GetUserButton(onClick: () -> Unit, isEnabled: Boolean) {
 @Preview
 @Composable
 fun StartScreenPreview() {
-    val userMapper = UserMapper()
-    val userApiService = UserApiService(userMapper)
-    StartScreen(
-        userApiService = userApiService
-    )
+    StartScreen()
 }

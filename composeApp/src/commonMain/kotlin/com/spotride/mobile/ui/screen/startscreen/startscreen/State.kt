@@ -1,4 +1,4 @@
-package com.spotride.mobile.ui.screen.startscreen
+package com.spotride.mobile.ui.screen.startscreen.startscreen
 
 import com.spotride.mobile.model.user.model.User
 

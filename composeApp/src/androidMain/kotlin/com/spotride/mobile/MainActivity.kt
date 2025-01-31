@@ -10,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.spotride.mobile.ui.screen.startscreen.startscreen.StartScreenPreview
+import com.spotride.mobile.ui.screen.loginscreen.RegisterScreenPreview
 import com.spotride.mobile.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    StartScreenPreview()
+                    RegisterScreenPreview()
                 }
             }
         }
@@ -35,5 +35,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    StartScreenPreview()
+    RegisterScreenPreview()
 }

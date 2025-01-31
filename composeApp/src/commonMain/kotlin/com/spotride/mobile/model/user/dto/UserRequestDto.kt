@@ -1,10 +1,12 @@
-package com.spotride.mobile.model.user.model
+package com.spotride.mobile.model.user.dto
+
+import kotlinx.serialization.Serializable
 
 /**
- * User data model.
+ * User request DTO model.
  */
-data class User(
-    val id: Long,
+@Serializable
+data class UserRequestDto(
     val email: String,
     val password: String,
     val username: String? = null,
